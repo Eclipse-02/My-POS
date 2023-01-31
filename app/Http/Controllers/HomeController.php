@@ -36,9 +36,9 @@ class HomeController extends Controller
         $barangs = Barang::select('nama_barang')
                 ->distinct('nama_barang')
                 ->count('nama_barang');
-        $transaksis = Transaksi::select('nama_barang')
-                ->distinct('nama_barang')
-                ->count('nama_barang');
+        $transaksis = Transaksi::select('total_barang')
+                ->distinct('total_barang')
+                ->count('total_barang');
         return view('home', compact('mereks', 'distributors', 'barangs', 'transaksis'));
     }
 }

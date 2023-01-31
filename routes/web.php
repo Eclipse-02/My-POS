@@ -36,18 +36,17 @@ Route::group(['middleware' => ['auth']], function ()
         Route::resource('/distributors', DistributorController::class);
         Route::resource('/barangs', BarangController::class);
         Route::resource('/users', UserController::class);
+    });
+    Route::group(['middleware' => ['role:kasir', 'role:admin']], function ()
+    {
         Route::get('/get-harga', [TransaksiController::class, 'getHarga'])->name('getHarga');
         Route::resource('/transaksis', TransaksiController::class);
-    });
-    Route::group(['middleware' => ['role:kasir']], function ()
-    {
+        Route::get('items', [TransaksiController::class, 'cart'])->name('cart.items');
+        Route::post('cart', [TransaksiController::class, 'addToCart'])->name('cart.store');
+        Route::post('update-cart', [TransaksiController::class, 'updateCart'])->name('cart.update');
+        Route::post('remove', [TransaksiController::class, 'removeCart'])->name('cart.remove');
+        Route::post('clear', [TransaksiController::class, 'clearAllCart'])->name('cart.clear');
+        Route::post('pay', [TransaksiController::class, 'payCart'])->name('cart.pay');
     });
 });
 
-
-Route::get('items', [TransaksiController::class, 'cart'])->name('cart.items');
-Route::post('cart', [TransaksiController::class, 'addToCart'])->name('cart.store');
-Route::post('update-cart', [TransaksiController::class, 'updateCart'])->name('cart.update');
-Route::post('remove', [TransaksiController::class, 'removeCart'])->name('cart.remove');
-Route::post('clear', [TransaksiController::class, 'clearAllCart'])->name('cart.clear');
-Route::post('pay', [TransaksiController::class, 'payCart'])->name('cart.pay');

@@ -32,7 +32,7 @@
                             <div class="card card-plain">
                                 <div class="card-header pb-0 text-start">
                                     <h4 class="font-weight-bolder">Sign In</h4>
-                                    <p class="mb-0">Enter your email and password to sign in</p>
+                                    <p class="mb-0">Silahkan masukkan password dan email anda</p>
                                 </div>
                                 <div class="card-body">
                                     <form role="form" action="{{ route('login') }}" method="POST">
@@ -42,26 +42,26 @@
                                             <input type="email" class="form-control form-control-lg @error('email') has-error @enderror"
                                                 placeholder="Email" aria-label="Email" name="email"
                                                 value="{{ old('email') }}" required autocomplete="email" autofocus>
-                                                @error('email')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                                @enderror
+                                                @if(Session::has('error'))
+                                                <div class="alert alert-danger">
+                                                {{ Session::get('error')}}
+                                                </div>
+                                                @endif
                                         </div>
                                         <div class="mb-3">
                                             <input type="password" class="form-control form-control-lg @error('password') has-error @enderror"
                                                 placeholder="Password" aria-label="Password" name="password"
                                                 required autocomplete="current-password">
-                                                @error('password')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
+                                                @if(Session::has('error'))
+                                                <div class="alert alert-danger">
+                                                {{ Session::get('error')}}
+                                                </div>
+                                                @endif
                                         </div>
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" name="remember" id="remember"
                                             {{ old('remember') ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="remember">Remember Me</label>
+                                            <label class="form-check-label" for="remember">Ingat Saya</label>
                                         </div>
                                         <div class="text-center">
                                             <button type="submit"
@@ -77,10 +77,8 @@
                                 style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/signin-ill.jpg');
           background-size: cover;">
                                 <span class="mask bg-gradient-primary opacity-6"></span>
-                                <h4 class="mt-5 text-white font-weight-bolder position-relative">"Attention is the new
-                                    currency"</h4>
-                                <p class="text-white position-relative">The more effortless the writing looks, the more
-                                    effort the writer actually put into the process.</p>
+                                <h4 class="mt-5 text-white font-weight-bolder position-relative">"My POS"</h4>
+                                <p class="text-white position-relative">My POS (Point of Sales) adalah suatu sistem yang digunakan dalam kebutuhan berbagai macam usaha bisnis ritel untuk dapat mempermudah proses transaksi jual beli secara cepat, aman, dan sistematis.</p>
                             </div>
                         </div>
                     </div>
