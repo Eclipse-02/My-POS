@@ -37,7 +37,7 @@ Route::group(['middleware' => ['auth']], function ()
         Route::resource('/barangs', BarangController::class);
         Route::resource('/users', UserController::class);
     });
-    Route::group(['middleware' => ['role:kasir', 'role:admin']], function ()
+    Route::group(['middleware' => ['role:kasir|admin']], function ()
     {
         Route::get('/get-harga', [TransaksiController::class, 'getHarga'])->name('getHarga');
         Route::resource('/transaksis', TransaksiController::class);
