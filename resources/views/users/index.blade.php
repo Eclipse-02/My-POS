@@ -19,7 +19,6 @@
                             <th>No</th>
                             <th>Nama</th>
                             <th>Nama User</th>
-                            <th>Password</th>
                             <th>Role</th>
                             <th>Action</th>
                         </tr>
@@ -54,10 +53,6 @@
                 {
                     data: "username",
                     name: "username"
-                },
-                {
-                    data: "password",
-                    name: "password"
                 },
                 {
                     data: "display_name",

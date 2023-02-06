@@ -77,13 +77,16 @@ class UserController extends Controller
             'role' => 'required'
         ]);
 
+        
         $user = User::create([
             'name' => $request->name,
             'username' => $request->username,
-            'email' => Hash::make($request->email),
-            'password' => $request->password,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
             'role' => $request->role
         ]);
+        
+        dd($user);
 
         if ($request->role == 'admin') {
             $user->attachRole('admin');
@@ -125,30 +128,7 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required',
-            'password' => 'required',
-            'role' => 'required'
-        ]);
-
-        $users = User::create([
-            'name' => $request->name,
-            'username' => $request->username,
-            'email' => Hash::make($request->email),
-            'password' => $request->password,
-            'role' => $request->role
-        ]);
-
-        if ($request->role == 'admin') {
-            $users->attachRole('admin');
-        }else {
-            $users->attachRole('kasir');
-        }
-
-        $user->update($users);
-
-        return redirect()->route('users.index');
+        //
     }
 
     /**

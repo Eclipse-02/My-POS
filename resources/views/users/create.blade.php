@@ -38,7 +38,7 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label class="h6 text-capitalize" for="password">Password</label>
-                                    <input type="password" class="form-control" id="password" name="password"
+                                    <input type="password" min="8" class="form-control" id="password" name="password"
                                         placeholder="Password">
                                 </div>
                             </div>
@@ -63,15 +63,3 @@
         </div>
     </div>
 @endsection
-
-@push('script')
-<script>
-    function uang() {
-        var x = document.getElementById('nama_barang').value;
-
-        $.ajax({
-            url: {{ route('barangs.') }}
-        })
-    }
-</script>
-@endpush
