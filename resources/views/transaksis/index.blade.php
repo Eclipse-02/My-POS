@@ -6,21 +6,30 @@
 <div class="row mt-4 justify-content-center">
     <div class="col-lg-12 mb-lg-0 mb-4">
         <div class="card z-index-2 h-100">
-            <div class="card-header pb-0 pt-3 bg-transparent">
+            <div class="card-header pb-0 pt-3 bg-transparent row">
                 <h3 class="text-capitalize">Data Transaksi</h3>
-                <p class="text-sm mb-0">
-                    <a class="btn btn-success" href="{{ route('cart.items') }}"> Create</a>
-                </p>
+                <div class="dropdown w-auto">
+                    <a class="btn btn-primary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        Export
+                    </a>
+
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ route('transaksis.export-excel') }}">Excel</a></li>
+                        <li><a class="dropdown-item" href="{{ route('transaksis.export-pdf') }}">PDF</a></li>
+                    </ul>
+                </div>
             </div>
             <div class="card-body p-3">                
                 <table id="example" class="table hover order-column row-border" style="width:100%">
                     <thead>
                         <tr>
                             <th>No</th>
+                            <th>ID</th>
+                            <th>Nama Barang</th>
+                            <th>Harga Barang</th>
                             <th>Total Barang</th>
-                            <th>Total Harga</th>
-                            <th>Total Bayar</th>
-                            <th>Kembalian</th>
+                            <th>Petugas</th>
                             <th>Tanggal Beli</th>
                             <th>Action</th>
                         </tr>
@@ -49,20 +58,24 @@
                     searchable: false
                 },
                 {
+                    data: "id",
+                    name: "id"
+                },
+                {
+                    data: "nama_barang",
+                    name: "nama_barang"
+                },
+                {
+                    data: "harga_barang",
+                    name: "harga_barang"
+                },
+                {
                     data: "total_barang",
                     name: "total_barang"
                 },
                 {
-                    data: "total_harga",
-                    name: "total_harga"
-                },
-                {
-                    data: "total_bayar",
-                    name: "total_bayar"
-                },
-                {
-                    data: "kembalian",
-                    name: "kembalian"
+                    data: "petugas",
+                    name: "petugas"
                 },
                 {
                     data: "tgl_beli",

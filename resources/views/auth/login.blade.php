@@ -39,28 +39,27 @@
                                         @csrf
                                         
                                         <div class="mb-3">
-                                            <input type="email" class="form-control form-control-lg @error('email') has-error @enderror"
+                                            <input type="email" class="form-control form-control-lg @error('email') is-invalid @enderror"
                                                 placeholder="Email" aria-label="Email" name="email"
                                                 value="{{ old('email') }}" required autocomplete="email" autofocus>
-                                                @if(Session::has('error'))
-                                                <div class="alert alert-danger">
-                                                {{ Session::get('error')}}
-                                                </div>
-                                                @endif
+                                                @error('email')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
                                         </div>
                                         <div class="mb-3">
-                                            <input type="password" class="form-control form-control-lg @error('password') has-error @enderror"
+                                            <input type="password" class="form-control form-control-lg @error('password') is-invalid @enderror"
                                                 placeholder="Password" aria-label="Password" name="password"
                                                 required autocomplete="current-password">
-                                                @if(Session::has('error'))
-                                                <div class="alert alert-danger">
-                                                {{ Session::get('error')}}
-                                                </div>
-                                                @endif
+                                                @error('password')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
                                         </div>
                                         <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" name="remember" id="remember"
-                                            {{ old('remember') ? 'checked' : '' }}>
+                                            <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
                                             <label class="form-check-label" for="remember">Ingat Saya</label>
                                         </div>
                                         <div class="text-center">

@@ -15,8 +15,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
-
         $this->call(LaratrustSeeder::class);
 
         \App\Models\User::factory()->create([
@@ -27,7 +25,7 @@ class DatabaseSeeder extends Seeder
         ])->attachRole('admin');
 
         \App\Models\User::factory()->create([
-            'name' => 'Amel',
+            'name' => 'Maman',
             'username' => 'Cashier',
             'email' => 'cashier@gmail.com',
             'password' => Hash::make('87654321'),

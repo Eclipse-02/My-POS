@@ -17,7 +17,7 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label class="h6 text-capitalize" for="nama_distributor">Nama Distributor</label>
-                                    <input type="text" class="form-control @error('nama_distributor') has-error @enderror" id="nama_distributor" name="nama_distributor"
+                                    <input type="text" class="form-control @error('nama_distributor') is-invalid @enderror" id="nama_distributor" name="nama_distributor"
                                         placeholder="Nama Distributor">
                                         @error('nama_distributor')
                                         <span class="invalid-feedback" role="alert">
@@ -29,15 +29,28 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label class="h6 text-capitalize" for="alamat">Alamat</label>
-                                    <textarea type="text" class="form-control" id="alamat" name="alamat"
+                                    <textarea type="text" class="form-control @error('alamat') is-invalid @enderror" id="alamat" name="alamat"
                                         placeholder="Alamat"></textarea>
+                                        @error('alamat')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label class="h6 text-capitalize" for="no_hp">No HP</label>
-                                    <input type="number" min="0" max="9999999999999" class="form-control" id="no_hp" name="no_hp"
-                                        placeholder="No HP">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text text-white bg-primary" id="no_hp">+62</span>
+                                        <input type="number" class="form-control @error('no_hp') is-invalid @enderror ps-1" id="no_hp" name="no_hp"
+                                        aria-describedby="no_hp">
+                                    </div>
+                                        @error('no_hp')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
                                 </div>
                             </div>
                             <div class="text-center">

@@ -16,8 +16,12 @@
 
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <input type="text" class="form-control" id="nama_merek" name="nama_merek"
-                                        placeholder="Nama Merek">
+                                    <input type="text" class="form-control @error('nama_merek') is-invalid @enderror" id="nama_merek" name="nama_merek" placeholder="Nama Merek">
+                                        @error('nama_merek')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                 </div>
                             </div>
                             <div class="text-center">

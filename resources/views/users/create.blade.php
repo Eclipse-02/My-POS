@@ -17,39 +17,64 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label class="h6 text-capitalize" for="name">Nama</label>
-                                    <input type="text" class="form-control" id="name" name="name"
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name"
                                         placeholder="Nama">
+                                        @error('name')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label class="h6 text-capitalize" for="username">Nama User</label>
-                                    <input type="text" class="form-control" id="username" name="username"
+                                    <input type="text" class="form-control @error('username') is-invalid @enderror" id="username" name="username"
                                         placeholder="Nama User">
+                                        @error('username')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label class="h6 text-capitalize" for="email">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email"
+                                    <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email"
                                         placeholder="Email">
+                                        @error('email')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label class="h6 text-capitalize" for="password">Password</label>
-                                    <input type="password" min="8" class="form-control" id="password" name="password"
+                                    <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password"
                                         placeholder="Password">
+                                        @error('password')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label class="h6 text-capitalize" for="role">Role</label>
-                                    <select name="role" id="role" class="form-select">
+                                    <select name="role" id="role" class="form-select @error('role') is-invalid @enderror">
                                         <option value="" selected disabled>Role</option>
                                         <option value="admin">Admin</option>
                                         <option value="kasir">Kasir</option>
                                     </select>
+                                    @error('role')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="text-center">

@@ -39,6 +39,7 @@ class HomeController extends Controller
         $transaksis = Transaksi::select('total_barang')
                 ->distinct('total_barang')
                 ->count('total_barang');
-        return view('home', compact('mereks', 'distributors', 'barangs', 'transaksis'));
+        $notifikasi = Barang::where('stok', '<=', 5)->get();
+        return view('home', compact('mereks', 'distributors', 'barangs', 'transaksis', 'notifikasi'));
     }
 }

@@ -6,9 +6,12 @@ use Cart;
 use App\Models\Barang;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
-
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\TransaksisExport;
+use App\Exports\TransaksiDescriptionsExport;
+use App\Models\TransaksiDescription;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class TransaksiController extends Controller
 {
@@ -22,74 +25,44 @@ class TransaksiController extends Controller
         if ($request->ajax()) {
             $data = Transaksi::all();
             return DataTables::of($data)
-                    ->addIndexColumn()
-                    ->addColumn('action', function($row){
-
-                        $btn = '
-                        <form onsubmit="return confirm(\'Apakah anda yakin ingin menghapus '.$row->name.' ?\');"  action="users/'.$row->id.'" method="POST">
-
-                            '.csrf_field().'
-                            '.method_field("DELETE").'
-
-                            <button type="submit" class="btn btn-danger">
-                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-                                </svg>
-                            </button>
-                        </form>
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    $btn =
+                        '
+                            <a href="transaksis/'.$row->id .'" class="btn btn-primary" target="_blank">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 384 512">
+                                <style>svg{fill:#ffffff}</style>
+                                <path d="M358.4 3.2L320 48 265.6 3.2a15.9 15.9 0 0 0-19.2 0L192 48 137.6 3.2a15.9 15.9 0 0 0-19.2 0L64 48 25.6 3.2C15-4.7 0 2.8 0 16v480c0 13.2 15 20.7 25.6 12.8L64 464l54.4 44.8a15.9 15.9 0 0 0 19.2 0L192 464l54.4 44.8a15.9 15.9 0 0 0 19.2 0L320 464l38.4 44.8c10.5 7.9 25.6.4 25.6-12.8V16c0-13.2-15-20.7-25.6-12.8zM320 360c0 4.4-3.6 8-8 8H72c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h240c4.4 0 8 3.6 8 8v16zm0-96c0 4.4-3.6 8-8 8H72c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h240c4.4 0 8 3.6 8 8v16zm0-96c0 4.4-3.6 8-8 8H72c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h240c4.4 0 8 3.6 8 8v16z"/>
+                            </svg>
+                            </a>
                         ';
 
-                        return $btn;
-                    })
-                    ->rawColumns(['action'])
-                    ->make(true);
+                    return $btn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
         }
         return view('transaksis.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function exportExcel()
     {
-        $barangs = Barang::all();
-        return view('transaksis.create', compact('barangs'));
+        return Excel::download(new TransaksisExport(), 'Laporan Transaksi.xlsx');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function exportPDF()
     {
-        $request->validate([
-            'nama_barang' => 'required',
-            'harga_barang' => 'required',
-            'total_barang' => 'required',
-            'total_bayar' => 'required',
-        ]);
+        return Excel::download(new TransaksisExport(), 'Laporan Transaksi.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
+    }
 
-        if(($request->total_bayar - ($request->harga_barang * $request->total_barang)) < 0) {
-            return redirect()->back()->withErrors(['msg' => 'Saldo anda kurang!']);
-        }else {
-            Transaksi::create([
-                'nama_barang' => $request->nama_barang,
-                'harga_barang' => $request->harga_barang,
-                'total_barang' => $request->total_barang,
-                'total_harga' => $request->harga_barang * $request->total_barang,
-                'total_bayar' => $request->total_bayar,
-                'kembalian' =>  $request->total_bayar - ($request->harga_barang * $request->total_barang),
-                'tgl_beli' => date('Y-m-d')
-                    ]);
+    public function exportDetailExcel($id)
+    {
+        return Excel::download(new TransaksiDescriptionsExport($id), 'Laporan Transaksi Detail.xlsx');
+    }
 
-            return redirect()->route('transaksis.index');
-        }
-        
+    public function exportDetailPDF($id)
+    {
+        return Excel::download(new TransaksiDescriptionsExport($id), 'Laporan Transaksi Detail.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
     }
 
     /**
@@ -98,54 +71,11 @@ class TransaksiController extends Controller
      * @param  \App\Models\Transaksi  $transaksi
      * @return \Illuminate\Http\Response
      */
-    public function show(Transaksi $transaksi)
+    public function show($transaksi)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Transaksi  $transaksi
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Transaksi $transaksi)
-    {
-        $barangs = Barang::all();
-        return view('transaksis.edit', compact('barangs', 'transaksi'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Transaksi  $transaksi
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Transaksi $transaksi)
-    {
-        // dd($request->all());
-        $request->validate([
-            'nama_barang' => 'required',
-            'harga_barang' => 'required',
-            'total_barang' => 'required',
-            'total_bayar' => 'required',
-        ]);
-
-        if(($request->total_bayar - ($request->harga_barang * $request->total_barang)) < 0) {
-            return redirect()->back()->withErrors(['msg' => 'Saldo anda kurang!']);
-        }else {
-            $transaksi->update([
-                'nama_barang' => $request->nama_barang,
-                'harga_barang' => $request->harga_barang,
-                'total_barang' => $request->total_barang,
-                'total_harga' => $request->harga_barang * $request->total_barang,
-                'total_bayar' => $request->total_bayar,
-                'kembalian' =>  $request->total_bayar - ($request->harga_barang * $request->total_barang),
-            ]);    
-
-            return redirect()->route('transaksis.index');
-        }
+        $trans = Transaksi::where('id', $transaksi)->groupBy('nama_barang')->get();
+        $desc = TransaksiDescription::where('id', $transaksi)->first();
+        return view('carts.view', compact('trans', 'desc'));
     }
 
     /**
@@ -158,6 +88,7 @@ class TransaksiController extends Controller
     {
         $transaksi->delete();
 
+        Alert::toast('Data Berhasil Di Hapus!', 'success');
         return redirect()->route('transaksis.index');
     }
 
@@ -166,45 +97,80 @@ class TransaksiController extends Controller
         $barangs = Barang::all();
         $cartItems = Cart::getContent();
 
-        return view('carts.index', compact('barangs', 'cartItems'))
-        ->with('i', (request()->input('page', 1) - 1) * 5);
+        return view('carts.index', compact('barangs', 'cartItems'))->with('i', (request()->input('page', 1) - 1) * 5);
     }
-
 
     public function addToCart(Request $request)
     {
+        $stok = Barang::select('stok')
+            ->where('nama_barang', $request->name)
+            ->first();
+        if ($stok->stok < 1) {
+            Alert::toast('Stok Tidak Memadai!', 'error');
+            return redirect()->back();
+        }
+
         Cart::add([
             'id' => $request->id,
             'name' => $request->name,
             'price' => $request->price,
             'quantity' => $request->quantity,
         ]);
-        session()->flash('success', 'Product is Added to Cart Successfully !');
 
+        Alert::toast('Barang Berhasil Dimasukkan ke Keranjang!', 'success');
         return redirect()->route('cart.items');
     }
 
     public function updateCart(Request $request)
     {
-        Cart::update(
-            $request->id,
-            [
+        $stok = Barang::select('stok')
+            ->where('id', $request->id)
+            ->first();
+        // dd($stok);
+        if ($stok->stok < $request->quantity) {
+            Alert::toast('Stok Tidak Memadai!', 'error');
+            return redirect()->back();
+        } else {
+            Cart::update($request->id, [
                 'quantity' => [
                     'relative' => false,
-                    'value' => $request->quantity
+                    'value' => $request->quantity,
                 ],
-            ]
-        );
+            ]);
 
-        session()->flash('success', 'Item Cart is Updated Successfully !');
+            Alert::toast('Jumlah Barang Berhasil Di Ubah!', 'success');
+            return redirect()->route('cart.items');
+        }
+    }
 
+    public function updateAllCart(Request $request)
+    {
+        foreach ($request->id as $id) {
+            $stok = Barang::select('stok')
+                ->where('id', $id)
+                ->get();
+            if ($stok->stok < $request->quantity) {
+                Alert::toast('Stok Tidak Memadai!', 'error');
+                return redirect()->back();
+            } else {
+                Cart::update($id, [
+                    'quantity' => [
+                        'relative' => false,
+                        'value' => $request->quantity,
+                    ],
+                ]);
+            }
+        }
+
+        Alert::toast('Jumlah Barang Berhasil Di Ubah!', 'success');
         return redirect()->route('cart.items');
     }
 
     public function removeCart(Request $request)
     {
         Cart::remove($request->id);
-        session()->flash('success', 'Item Cart Remove Successfully !');
+
+        Alert::toast('Barang Berhasil Di Hapus!', 'success');
 
         return redirect()->route('cart.items');
     }
@@ -213,7 +179,7 @@ class TransaksiController extends Controller
     {
         Cart::clear();
 
-        session()->flash('success', 'All Item Cart Clear Successfully !');
+        Alert::toast('Keranjang Berhasil Dikosongkan!', 'success');
 
         return redirect()->route('cart.items');
     }
@@ -221,30 +187,47 @@ class TransaksiController extends Controller
     public function payCart(Request $request)
     {
         $cartItems = Cart::getContent();
-
+        
         $request->validate([
-            'total_bayar' => 'required'
+            'total_bayar' => 'required',
         ]);
-
+        
         if (Cart::getTotal() > $request->total_bayar) {
-            return redirect()->back()->withErrors(['msg' => 'Saldo anda kurang!']);
+            Alert::toast('Saldo Kurang!', 'error');
+            return redirect()->back();
         }
-
+        
         foreach ($cartItems as $item) {
-            if (!Barang::select('stok')->where('nama_barang', $item->name)) {
-                return redirect()->back()->withErrors(['msg' => 'Stok tidak memadai!']);
+            $stok = Barang::select('stok')
+            ->where('nama_barang', '=', $item->name)
+                ->first();
+            if ($stok->stok < $item->quantity) {
+                Alert::toast('Stok Tidak Memadai!', 'error');
+                return redirect()->back();
             }
         }
 
         $kembalian = $request->total_bayar - Cart::getTotal();
 
-        Transaksi::create([
-            'total_barang' => Cart::getTotalQuantity(),
-            'total_harga' => Cart::getTotal(),
-            'total_bayar' => $request->total_bayar,
-            'kembalian' => $kembalian,
-            'tgl_beli' => date('Y-m-d')
-        ]);
+        $desc = new TransaksiDescription();
+        $desc->total_barang = Cart::getTotalQuantity();
+        $desc->total_harga = Cart::getTotal();
+        $desc->total_bayar = $request->total_bayar;
+        $desc->kembalian = $kembalian;
+        $desc->tgl_beli = date('Y-m-d');
+        $desc->petugas = auth()->user()->name;
+        $desc->save();
+
+        foreach ($cartItems as $item) {
+            Transaksi::create([
+                'id' => $desc->id,
+                'nama_barang' => $item->name,
+                'harga_barang' => $item->price,
+                'total_barang' => $item->quantity,
+                'tgl_beli' => date('Y-m-d'),
+                'petugas' => auth()->user()->name,
+            ]);
+        }
 
         foreach ($cartItems as $item) {
             Barang::where('nama_barang', $item->name)->decrement('stok', $item->quantity);
@@ -252,15 +235,14 @@ class TransaksiController extends Controller
 
         Cart::clear();
 
-        session()->flash('success', 'All Item Cart Clear Successfully !');
+        Alert::toast('Transaksi Sukses!', 'success');
 
         return redirect()->route('cart.items');
     }
 
     public function getHarga(Request $request)
     {
-        $hargas['nama_barang'] = Barang::where('nama_barang', $request->nama_barang)
-                                ->first();
+        $hargas['nama_barang'] = Barang::where('nama_barang', $request->nama_barang)->first();
 
         return response()->json([
             'hargas' => $hargas,

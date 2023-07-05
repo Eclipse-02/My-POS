@@ -6,11 +6,20 @@
 <div class="row mt-4 justify-content-center">
     <div class="col-lg-12 mb-lg-0 mb-4">
         <div class="card z-index-2 h-100">
-            <div class="card-header pb-0 pt-3 bg-transparent">
+            <div class="card-header pb-0 pt-3 bg-transparent row">
                 <h3 class="text-capitalize">Data Distributor</h3>
-                <p class="text-sm mb-0">
-                    <a class="btn btn-success" href="{{ route('distributors.create') }}"> Create</a>
-                </p>
+                <a class="ms-2 btn btn-success w-auto me-2" href="{{ route('distributors.create') }}">Create</a>
+                    <div class="dropdown w-auto">
+                        <a class="btn btn-primary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Export
+                        </a>
+
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ route('distributors.export-excel') }}">Excel</a></li>
+                            <li><a class="dropdown-item" href="{{ route('distributors.export-pdf') }}">PDF</a></li>
+                        </ul>
+                    </div>
             </div>
             <div class="card-body p-3">                
                 <table id="example" class="table table-striped" style="width:100%">
