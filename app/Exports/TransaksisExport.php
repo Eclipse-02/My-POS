@@ -22,9 +22,9 @@ class TransaksisExport implements FromCollection, WithHeadings, WithMapping
         return[
             $data->id,
             $data->total_barang,
-            $data->total_harga,
-            $data->total_bayar,
-            $data->kembalian,
+            $data->harga_barang,
+            $data->total_barang * $data->harga_barang,
+            $data->petugas,
             $data->tgl_beli
         ];
     }
@@ -34,9 +34,9 @@ class TransaksisExport implements FromCollection, WithHeadings, WithMapping
         return [
             '#',
             'Total Barang',
+            'Harga Barang',
             'Total Harga',
-            'Total Bayar',
-            'Kembalian',
+            'Petugas',
             'Tanggal Beli'
         ];
     }
